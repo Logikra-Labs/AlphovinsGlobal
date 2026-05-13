@@ -78,7 +78,7 @@ export default function Login() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@salero.com"
+                  placeholder="Enter your Email ID"
                   className="input-field pl-11"
                   required
                 />
