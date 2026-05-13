@@ -20,6 +20,12 @@ export default function EnquiryPopup() {
 
   // Trigger popup when location changes
   useEffect(() => {
+    // Don't show popup on the contact page since it already has a form
+    if (location.pathname === '/contact') {
+      setIsOpen(false);
+      return;
+    }
+
     // Wait a brief moment before showing the popup so the page can load first
     setHasClosedOnCurrentPage(false);
     const timer = setTimeout(() => {
