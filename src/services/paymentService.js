@@ -108,7 +108,9 @@ export const initializePayment = async (amount, customerDetails, cartItems, uid,
       },
       modal: {
         ondismiss: function() {
-          console.log("Payment modal closed by user");
+          // User closed/cancelled the Razorpay popup without paying
+          // No order is created — just notify the user
+          onError("Payment was cancelled. Your order has NOT been placed. Please try again if you wish to complete the purchase.");
         }
       }
     };
@@ -116,7 +118,9 @@ export const initializePayment = async (amount, customerDetails, cartItems, uid,
     const rzp1 = new window.Razorpay(options);
     
     rzp1.on('payment.failed', function (response) {
-      onError("Payment failed: " + response.error.description);
+      // Payment failed (card declined, network error, etc.) — no order is created
+      const reason = response.error?.description || response.error?.reason || "Unknown error";
+      onError(`Payment failed: ${reason}. Your order has NOT been placed. Please try a different payment method.`);
     });
 
     rzp1.open();

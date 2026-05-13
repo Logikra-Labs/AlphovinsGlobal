@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { CreditCard, CheckCircle2, AlertCircle, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { CreditCard, CheckCircle2, AlertCircle, ShoppingBag, ArrowLeft, XCircle } from 'lucide-react';
 import { initializePayment } from '../../services/paymentService';
 import { useAuth } from '../../context/AuthContext';
 import { getCustomerProfile } from '../../services/customerService';
@@ -32,6 +32,7 @@ export default function Checkout() {
   const [processing, setProcessing] = useState(false);
   const [successId, setSuccessId] = useState(null);
   const [error, setError] = useState('');
+  const [isCancelled, setIsCancelled] = useState(false);
 
   if (successId) {
     return (
@@ -78,6 +79,7 @@ export default function Checkout() {
     e.preventDefault();
     setProcessing(true);
     setError('');
+    setIsCancelled(false);
 
     // Call our simulated payment service
     initializePayment(
@@ -92,7 +94,10 @@ export default function Checkout() {
       },
       (errMessage) => {
         setProcessing(false);
+        const cancelled = errMessage.toLowerCase().includes('cancel');
+        setIsCancelled(cancelled);
         setError(errMessage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     );
   };
@@ -116,8 +121,16 @@ export default function Checkout() {
           <h2 className="text-2xl font-bold text-white mb-6">Delivery Details</h2>
           
           {error && (
-            <div className="p-4 rounded-xl bg-red-900/20 border border-red-500/30 text-red-400 flex items-center gap-2 mb-6">
-              <AlertCircle size={20} /> {error}
+            <div className={`p-4 rounded-xl border flex items-start gap-3 mb-6 ${
+              isCancelled 
+                ? 'bg-orange-900/20 border-orange-500/30 text-orange-400' 
+                : 'bg-red-900/20 border-red-500/30 text-red-400'
+            }`}>
+              {isCancelled ? <XCircle size={20} className="shrink-0 mt-0.5" /> : <AlertCircle size={20} className="shrink-0 mt-0.5" />}
+              <div>
+                <p className="font-bold text-sm mb-1">{isCancelled ? 'Payment Cancelled' : 'Payment Failed'}</p>
+                <p className="text-sm opacity-90">{error}</p>
+              </div>
             </div>
           )}
 
