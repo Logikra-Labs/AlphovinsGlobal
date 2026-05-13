@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import CartDrawer from '../components/public/CartDrawer';
 import WhatsAppWidget from '../components/public/WhatsAppWidget';
+import EnquiryPopup from '../components/public/EnquiryPopup';
 import { Globe } from 'lucide-react';
 
 export default function PublicLayout() {
@@ -141,6 +142,7 @@ export default function PublicLayout() {
 
       <CartDrawer />
       <WhatsAppWidget />
+      <EnquiryPopup />
 
       <footer className="w-full bg-[#010602] border-t border-green-900/30 py-12 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
