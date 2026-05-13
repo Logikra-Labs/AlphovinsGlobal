@@ -3,6 +3,7 @@ import Razorpay from 'razorpay';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -70,6 +71,34 @@ app.post('/api/verify-payment', (req, res) => {
   } catch (error) {
     console.error('Verification Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Email Sending Route
+app.post('/api/send-contact', async (req, res) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: 'business.alphovins@gmail.com',
+      subject: `New Contact Form Submission: ${subject}`,
+      text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nSubject: ${subject}\n\nMessage:\n${message}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Email Error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
   }
 });
 

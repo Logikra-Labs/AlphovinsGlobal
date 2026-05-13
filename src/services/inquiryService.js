@@ -10,10 +10,12 @@ export const submitInquiry = async (inquiryData) => {
     createdAt: isFirebaseConfigured ? serverTimestamp() : new Date().toISOString()
   };
 
+  let id = null;
+
   if (isFirebaseConfigured) {
     try {
       const docRef = await addDoc(collection(db, INQUIRIES_COLLECTION), dataToSave);
-      return { success: true, id: docRef.id };
+      id = docRef.id;
     } catch (error) {
       console.error("Error adding inquiry: ", error);
       return { success: false, error: error.message };
@@ -21,11 +23,30 @@ export const submitInquiry = async (inquiryData) => {
   } else {
     // Fallback to local storage for demo
     const existing = JSON.parse(localStorage.getItem('salero_inquiries') || '[]');
-    const newId = 'local_inq_' + Date.now();
-    existing.push({ ...dataToSave, id: newId });
+    id = 'local_inq_' + Date.now();
+    existing.push({ ...dataToSave, id });
     localStorage.setItem('salero_inquiries', JSON.stringify(existing));
-    return { success: true, id: newId };
   }
+
+  // Send email via backend
+  try {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+    const emailResponse = await fetch(`${apiUrl}/api/send-contact`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inquiryData)
+    });
+    
+    if (!emailResponse.ok) {
+      console.error('Failed to send email notification');
+    }
+  } catch (emailErr) {
+    console.error('Error triggering email:', emailErr);
+  }
+
+  return { success: true, id };
 };
 
 export const getInquiries = async () => {
