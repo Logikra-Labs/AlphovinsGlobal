@@ -102,6 +102,33 @@ app.post('/api/send-contact', async (req, res) => {
   }
 });
 
+// Refund Payment Route
+app.post('/api/refund-payment', async (req, res) => {
+  try {
+    const { paymentId, amount } = req.body;
+
+    if (!paymentId) {
+      return res.status(400).json({ error: 'Missing payment ID' });
+    }
+
+    const refundOptions = {};
+    if (amount) {
+      refundOptions.amount = Math.round(amount * 100);
+    }
+
+    const refund = await razorpay.payments.refund(paymentId, refundOptions);
+
+    if (!refund) {
+      return res.status(500).json({ error: 'Failed to initiate refund' });
+    }
+
+    res.json({ success: true, refund });
+  } catch (error) {
+    console.error('Refund Error:', error);
+    res.status(500).json({ error: error.error?.description || error.message || 'Internal Server Error' });
+  }
+});
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Razorpay Backend running on port ${PORT}`);

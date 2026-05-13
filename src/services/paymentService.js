@@ -195,3 +195,33 @@ export const updateOrderStatus = async (orderId, newStatus) => {
   }
   return false;
 };
+
+// Cancel order and initiate refund
+export const cancelOrderAndRefund = async (orderId, paymentId) => {
+  try {
+    // 1. Call refund API
+    if (paymentId) {
+      const response = await fetch('/api/refund-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Refund failed');
+      }
+    }
+
+    // 2. Update order status to 'Cancelled'
+    const updated = await updateOrderStatus(orderId, 'Cancelled');
+    if (!updated) {
+      throw new Error('Failed to update order status');
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Cancellation error:', error);
+    return { success: false, error: error.message };
+  }
+};

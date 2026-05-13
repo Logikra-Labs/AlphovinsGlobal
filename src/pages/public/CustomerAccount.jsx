@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getCustomerProfile, saveCustomerProfile } from '../../services/customerService';
-import { getCustomerOrders } from '../../services/paymentService';
-import { User, MapPin, Package, Clock, CheckCircle, Truck, LogOut, Loader2 } from 'lucide-react';
+import { getCustomerOrders, cancelOrderAndRefund } from '../../services/paymentService';
+import { User, MapPin, Package, Clock, CheckCircle, Truck, LogOut, Loader2, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function CustomerAccount() {
@@ -65,6 +65,7 @@ export default function CustomerAccount() {
       case 'Processing': return <Clock size={16} className="text-yellow-400" />;
       case 'Shipped': return <Truck size={16} className="text-blue-400" />;
       case 'Delivered': return <CheckCircle size={16} className="text-emerald-400" />;
+      case 'Cancelled': return <XCircle size={16} className="text-red-400" />;
       default: return <Package size={16} className="text-gray-400" />;
     }
   };
@@ -183,15 +184,37 @@ export default function CustomerAccount() {
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-bold text-white text-lg">Order #{order.id.slice(-6).toUpperCase()}</h3>
-                          <span className={`px-2 py-0.5 rounded text-xs font-medium flex items-center gap-1 bg-white/5 border border-white/10 text-gray-300`}>
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium flex items-center gap-1 ${
+                            order.orderStatus === 'Cancelled' ? 'bg-red-900/20 text-red-400 border border-red-500/30' : 'bg-white/5 border border-white/10 text-gray-300'
+                          }`}>
                             {getStatusIcon(order.orderStatus)} {order.orderStatus}
                           </span>
                         </div>
                         <p className="text-sm text-gray-400">{(order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt)).toLocaleString()}</p>
                       </div>
-                      <div className="text-left sm:text-right">
-                        <p className="text-sm text-gray-400">Total Amount</p>
-                        <p className="font-bold text-green-400 text-xl">₹{order.totalAmount}</p>
+                      <div className="text-left sm:text-right flex flex-col sm:items-end gap-2">
+                        <div>
+                          <p className="text-sm text-gray-400">Total Amount</p>
+                          <p className="font-bold text-green-400 text-xl">₹{order.totalAmount}</p>
+                        </div>
+                        {order.orderStatus === 'Processing' && (
+                          <button 
+                            onClick={async () => {
+                              if (window.confirm('Are you sure you want to cancel this order? This action cannot be undone and your payment will be refunded.')) {
+                                const result = await cancelOrderAndRefund(order.id, order.paymentId);
+                                if (result.success) {
+                                  alert('Order cancelled and refund initiated successfully!');
+                                  loadData(); // Refresh orders
+                                } else {
+                                  alert('Failed to cancel order: ' + result.error);
+                                }
+                              }
+                            }}
+                            className="px-3 py-1.5 text-xs font-bold rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                          >
+                            Cancel Order
+                          </button>
+                        )}
                       </div>
                     </div>
                     

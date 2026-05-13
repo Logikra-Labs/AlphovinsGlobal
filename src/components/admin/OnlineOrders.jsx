@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getOnlineOrders, updateOrderStatus } from '../../services/paymentService';
-import { ShoppingBag, Search, CheckCircle, Package, Truck, Clock } from 'lucide-react';
+import { getOnlineOrders, updateOrderStatus, cancelOrderAndRefund } from '../../services/paymentService';
+import { ShoppingBag, Search, CheckCircle, Package, Truck, Clock, XCircle } from 'lucide-react';
 
 export default function OnlineOrders() {
   const [orders, setOrders] = useState([]);
@@ -35,6 +35,7 @@ export default function OnlineOrders() {
       case 'Processing': return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
       case 'Shipped': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
       case 'Delivered': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
+      case 'Cancelled': return 'text-red-400 bg-red-400/10 border-red-400/20';
       default: return 'text-gray-400 bg-gray-400/10 border-gray-400/20';
     }
   };
@@ -44,6 +45,7 @@ export default function OnlineOrders() {
       case 'Processing': return <Clock size={14} />;
       case 'Shipped': return <Truck size={14} />;
       case 'Delivered': return <CheckCircle size={14} />;
+      case 'Cancelled': return <XCircle size={14} />;
       default: return <Package size={14} />;
     }
   };
@@ -124,16 +126,44 @@ export default function OnlineOrders() {
                   </div>
                   
                   <div className="mt-4 pt-4 border-t border-green-800/20">
-                    <label className="block text-xs font-semibold text-green-400/70 uppercase mb-2">Update Status</label>
-                    <select 
-                      value={order.orderStatus}
-                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                      className="select-field text-sm"
-                    >
-                      <option value="Processing">Processing</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <label className="block text-xs font-semibold text-green-400/70 uppercase mb-2">Update Status</label>
+                        <select 
+                          value={order.orderStatus}
+                          onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                          className="select-field text-sm w-full"
+                          disabled={order.orderStatus === 'Cancelled'}
+                        >
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                      </div>
+                      
+                      {order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Delivered' && (
+                        <div className="flex-1 text-right">
+                          <label className="block text-xs font-semibold text-transparent uppercase mb-2">Action</label>
+                          <button
+                            onClick={async () => {
+                              if (window.confirm('Are you sure you want to cancel this order? The customer will be refunded automatically.')) {
+                                const result = await cancelOrderAndRefund(order.id, order.paymentId);
+                                if (result.success) {
+                                  alert('Order cancelled and refund initiated successfully!');
+                                  loadOrders();
+                                } else {
+                                  alert('Failed to cancel order: ' + result.error);
+                                }
+                              }
+                            }}
+                            className="px-4 py-2 text-sm font-bold rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors w-full"
+                          >
+                            Cancel & Refund
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
