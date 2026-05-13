@@ -194,16 +194,17 @@ export default function AdminLayout() {
           padding: '0 16px',
           height: '64px',
         }}>
-          <NavLink to="/admin/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <img src="/logo.png" alt="Alphovins" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-            <span style={{ fontWeight: 700, fontSize: '14px', color: '#86efac' }}>ADMIN PORTAL</span>
-          </NavLink>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             style={{ background: 'none', border: 'none', color: '#86efac', cursor: 'pointer', padding: '8px' }}
           >
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
+          <NavLink to="/admin/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <img src="/logo.png" alt="Alphovins" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+            <span style={{ fontWeight: 700, fontSize: '14px', color: '#86efac' }}>ADMIN PORTAL</span>
+          </NavLink>
+          <div style={{ width: '40px' }} /> {/* spacer to keep logo centered */}
         </header>
 
         {/* Page Content */}
