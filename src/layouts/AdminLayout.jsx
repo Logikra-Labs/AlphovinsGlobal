@@ -27,6 +27,7 @@ export default function AdminLayout() {
     { id: '/admin/online-orders', label: 'E-Commerce', tamil: 'ஆன்லைன்', icon: ShoppingBag },
     { id: '/admin/products', label: 'Products', tamil: 'பொருட்கள்', icon: Package },
     { id: '/admin/inquiries', label: 'Inquiries', tamil: 'விசாரணை', icon: MessageSquare },
+    { id: '/admin/insights', label: 'Insights', tamil: 'செய்திகள்', icon: FileText },
     { id: '/admin/sales-stats', label: LABELS.salesStats.en, tamil: LABELS.salesStats.ta, icon: BarChart3 },
     { id: '/admin/recycle-bin', label: 'Recycle Bin', tamil: 'குப்பை', icon: Trash2 },
   ];

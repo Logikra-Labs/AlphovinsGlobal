@@ -24,6 +24,7 @@ import BillDetailWrapper from './components/BillDetailWrapper';
 import OnlineOrders from './components/admin/OnlineOrders';
 import Inquiries from './components/admin/Inquiries';
 import ProductManager from './components/admin/ProductManager';
+import InsightManager from './components/admin/InsightManager';
 import BillHistory from './components/BillHistory';
 import SalesStatisticsView from './components/SalesStatisticsView';
 import RecycleBin from './components/RecycleBin';
@@ -137,6 +138,7 @@ function App() {
         <Route path="online-orders" element={<OnlineOrders />} />
         <Route path="products" element={<ProductManager />} />
         <Route path="inquiries" element={<Inquiries />} />
+        <Route path="insights" element={<InsightManager />} />
         <Route path="bill/:id" element={<BillDetailWrapper />} />
         <Route path="sales-stats" element={<SalesStatisticsView />} />
         <Route path="recycle-bin" element={<RecycleBin />} />
