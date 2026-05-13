@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getCustomerProfile, saveCustomerProfile } from '../../services/customerService';
 import { getCustomerOrders, cancelOrderAndRefund } from '../../services/paymentService';
-import { User, MapPin, Package, Clock, CheckCircle, Truck, LogOut, Loader2, XCircle } from 'lucide-react';
+import { downloadOrderInvoice } from '../../services/pdfService';
+import { User, MapPin, Package, Clock, CheckCircle, Truck, LogOut, Loader2, XCircle, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function CustomerAccount() {
@@ -204,7 +205,7 @@ export default function CustomerAccount() {
                                 const result = await cancelOrderAndRefund(order.id, order.paymentId);
                                 if (result.success) {
                                   alert('Order cancelled and refund initiated successfully!');
-                                  loadData(); // Refresh orders
+                                  loadData();
                                 } else {
                                   alert('Failed to cancel order: ' + result.error);
                                 }
@@ -213,6 +214,14 @@ export default function CustomerAccount() {
                             className="px-3 py-1.5 text-xs font-bold rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                           >
                             Cancel Order
+                          </button>
+                        )}
+                        {order.orderStatus !== 'Cancelled' && (
+                          <button
+                            onClick={() => downloadOrderInvoice(order)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border border-green-500/30 text-green-400 hover:bg-green-500/10 transition-colors"
+                          >
+                            <Download size={13} /> Invoice
                           </button>
                         )}
                       </div>

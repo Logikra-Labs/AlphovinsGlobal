@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { CreditCard, CheckCircle2, AlertCircle, ShoppingBag, ArrowLeft, XCircle } from 'lucide-react';
+import { CreditCard, CheckCircle2, AlertCircle, ShoppingBag, ArrowLeft, XCircle, Download } from 'lucide-react';
 import { initializePayment } from '../../services/paymentService';
+import { downloadOrderInvoice } from '../../services/pdfService';
 import { useAuth } from '../../context/AuthContext';
 import { getCustomerProfile } from '../../services/customerService';
 
@@ -31,30 +32,57 @@ export default function Checkout() {
   }, [isCustomer, currentUser]);
   const [processing, setProcessing] = useState(false);
   const [successId, setSuccessId] = useState(null);
+  const [successOrder, setSuccessOrder] = useState(null);
   const [error, setError] = useState('');
   const [isCancelled, setIsCancelled] = useState(false);
 
   if (successId) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-20">
+      <div className="max-w-3xl mx-auto px-4 py-16">
         <div className="bg-[#030f05] rounded-3xl border border-emerald-900/50 p-8 sm:p-12 text-center slide-up">
           <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 size={40} className="text-emerald-400" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Payment Successful!</h1>
-          <p className="text-gray-400 mb-6">Thank you for your order. We've received your payment.</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Order Placed Successfully!</h1>
+          <p className="text-gray-400 mb-6">Thank you for your purchase. Your order is now being processed.</p>
           
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 max-w-md mx-auto mb-8">
-            <p className="text-sm text-gray-500 mb-1">Transaction ID</p>
-            <p className="text-green-300 font-mono font-bold">{successId}</p>
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 max-w-sm mx-auto mb-8 text-left space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Transaction ID</span>
+              <span className="text-green-300 font-mono text-sm font-bold">{successId}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Customer</span>
+              <span className="text-white text-sm">{successOrder?.customerDetails?.name}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Total Paid</span>
+              <span className="text-green-400 font-bold text-lg">&#x20B9;{successOrder?.totalAmount}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Order Status</span>
+              <span className="text-yellow-400 text-sm font-medium">Processing</span>
+            </div>
           </div>
-          
-          <button 
-            onClick={() => navigate('/')}
-            className="px-8 py-3 rounded-xl bg-green-500 text-[#020a04] font-bold hover:bg-green-400 transition-colors"
-          >
-            Return to Home
-          </button>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {successOrder && (
+              <button
+                onClick={() => downloadOrderInvoice(successOrder)}
+                className="flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold bg-green-500 hover:bg-green-400 text-[#020a04] shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all"
+              >
+                <Download size={18} /> Download Invoice (PDF)
+              </button>
+            )}
+            <button 
+              onClick={() => navigate('/')}
+              className="flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold border border-green-500/30 text-green-400 hover:bg-green-500/10 transition-colors"
+            >
+              Return to Home
+            </button>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-6">You can also download your invoice anytime from your <button onClick={() => navigate('/account')} className="text-green-400 underline">My Account</button> page.</p>
         </div>
       </div>
     );
@@ -88,9 +116,21 @@ export default function Checkout() {
       cartItems,
       currentUser?.uid,
       (paymentId) => {
+        const completedOrder = {
+          id: paymentId,
+          paymentId: paymentId,
+          customerDetails: formData,
+          cartItems: cartItems,
+          totalAmount: cartTotal,
+          orderStatus: 'Processing',
+          createdAt: new Date().toISOString(),
+        };
         setProcessing(false);
+        setSuccessOrder(completedOrder);
         setSuccessId(paymentId);
         clearCart();
+        // Auto-trigger invoice download after 1 second
+        setTimeout(() => downloadOrderInvoice(completedOrder), 1000);
       },
       (errMessage) => {
         setProcessing(false);
