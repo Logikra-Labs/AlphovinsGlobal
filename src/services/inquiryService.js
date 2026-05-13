@@ -28,10 +28,9 @@ export const submitInquiry = async (inquiryData) => {
     localStorage.setItem('salero_inquiries', JSON.stringify(existing));
   }
 
-  // Send email via backend
+  // Send email via backend or Vercel Serverless Function
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-    const emailResponse = await fetch(`${apiUrl}/api/send-contact`, {
+    const emailResponse = await fetch('/api/send-contact', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
