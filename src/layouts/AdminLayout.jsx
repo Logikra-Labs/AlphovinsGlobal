@@ -132,7 +132,7 @@ export default function AdminLayout() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#030f05' }}>
 
-      {/* Desktop Sidebar */}
+      {/* Desktop Sidebar — hidden on mobile, shown on lg+ screens via Tailwind */}
       <aside style={{
         width: '256px',
         flexShrink: 0,
@@ -140,13 +140,11 @@ export default function AdminLayout() {
         top: 0,
         left: 0,
         bottom: 0,
-        display: 'flex',
         flexDirection: 'column',
         background: 'rgba(5,46,22,0.85)',
         backdropFilter: 'blur(20px)',
         borderRight: '1px solid rgba(22,101,52,0.3)',
         zIndex: 50,
-        // Hide on mobile
       }} className="hidden lg:flex">
         <SidebarContent user={user} onLogout={handleLogout} onNavClick={() => {}} />
       </aside>
