@@ -20,8 +20,8 @@ export default function EnquiryPopup() {
 
   // Trigger popup when location changes
   useEffect(() => {
-    // Don't show popup on the contact page since it already has a form
-    if (location.pathname === '/contact') {
+    // Only show popup on Home ('/') and Insights ('/blog')
+    if (location.pathname !== '/' && location.pathname !== '/blog') {
       setIsOpen(false);
       return;
     }
