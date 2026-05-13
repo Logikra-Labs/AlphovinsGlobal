@@ -73,8 +73,8 @@ export default function Contact() {
                   <h4 className="text-white font-medium mb-1">Our Location</h4>
                   <p className="text-gray-400 leading-relaxed">
                     ALPHOVINS Global Agro Exports<br />
-                    123 Farm Road, Green Valley<br />
-                    Tamil Nadu, India
+                    12/141-12 Anandanadarkudi Road Pampanvilai<br />
+                    Nagercoil Kanyakumari Tamilnadu-629201
                   </p>
                 </div>
               </div>

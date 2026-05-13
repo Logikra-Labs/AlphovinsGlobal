@@ -28,7 +28,7 @@ export function generateBillPDF(bill, traderInfo = null) {
   const trader = traderInfo || {
     traderName: 'ALPHOVINS GLOBAL AGRO EXPORTS',
     traderPhone: '8012111116',
-    traderAddress: '123, Banana Street, Tamil Nadu, India',
+    traderAddress: '12/141-12 Anandanadarkudi Road Pampanvilai Nagercoil Kanyakumari Tamilnadu-629201',
     traderEmail: 'admin@salero.com'
   };
 

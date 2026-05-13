@@ -171,7 +171,7 @@ export default function PublicLayout() {
               <div className="flex flex-col gap-2 text-sm text-gray-400">
                 <p>Email: business.alphovins@gmail.com</p>
                 <p>Phone: +91 89250 11054</p>
-                <p>Location: Tamil Nadu, India</p>
+                <p>Location: 12/141-12 Anandanadarkudi Road Pampanvilai Nagercoil Kanyakumari Tamilnadu-629201</p>
               </div>
             </div>
           </div>

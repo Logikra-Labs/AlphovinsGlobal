@@ -12,7 +12,7 @@ const DEFAULT_PREFERENCES = {
   traderName: 'ALPHOVINS GLOBAL AGRO EXPORTS',
   traderPhone: '8012111116',
   traderEmail: 'admin@salero.com',
-  traderAddress: '123, Banana Street, Tamil Nadu, India',
+  traderAddress: '12/141-12 Anandanadarkudi Road Pampanvilai Nagercoil Kanyakumari Tamilnadu-629201',
   whatsappGreeting: 'Thanks for doing business with ALPHOVINS!',
   bankName: '',
   bankAccount: '',
