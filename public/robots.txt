@@ -1,0 +1,23 @@
+# Alphovins Global Agro Exports — robots.txt
+# Allow all search engines to index the public storefront
+
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /blog
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /refund
+
+# Block admin and internal routes from indexing
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /account
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://alphovins.com/sitemap.xml
