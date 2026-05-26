@@ -77,36 +77,36 @@ export default function EnquiryPopup() {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={handleClose}
       />
       
-      <div className="relative bg-[#020a04] w-full max-w-md p-6 sm:p-8 rounded-3xl border border-green-900/50 shadow-2xl shadow-green-900/20 slide-up z-10">
+      <div className="relative bg-white w-full max-w-md p-6 sm:p-8 rounded-3xl border border-[#E8E0D0] shadow-2xl shadow-black/10 slide-up z-10">
         <button 
           onClick={handleClose}
-          className="absolute right-4 top-4 p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors"
+          className="absolute right-4 top-4 p-2 text-[#6B7280] hover:text-[#0A0A0A] bg-[#F5F0E8] hover:bg-[#E8E0D0] rounded-full transition-colors"
         >
           <X size={20} />
         </button>
 
         {status.success ? (
           <div className="text-center py-8">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 size={32} className="text-emerald-400" />
+            <div className="w-16 h-16 rounded-full bg-[#ECFDF5] border border-[rgba(16,185,129,0.2)] flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={32} className="text-[#10B981]" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Message Sent!</h3>
-            <p className="text-gray-400 text-sm">Thank you for reaching out. We will get back to you shortly.</p>
+            <h3 className="text-xl font-bold text-[#0A0A0A] font-display mb-2">Message Sent!</h3>
+            <p className="text-[#6B7280] text-sm font-sans">Thank you for reaching out. We will get back to you shortly.</p>
           </div>
         ) : (
           <>
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-green-100 mb-2">Have a Question?</h2>
-              <p className="text-sm text-gray-400">Send us a quick message and we'll help you out.</p>
+              <h2 className="text-2xl font-bold text-[#0A0A0A] font-display mb-2">Have a Question?</h2>
+              <p className="text-sm text-[#6B7280] font-sans">Send us a quick message and we'll help you out.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {status.error && (
-                <div className="p-3 rounded-xl bg-red-900/20 border border-red-500/30 text-red-400 flex items-center gap-2 text-sm">
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 flex items-center gap-2 text-sm">
                   <AlertCircle size={16} /> {status.error}
                 </div>
               )}
@@ -149,7 +149,7 @@ export default function EnquiryPopup() {
               <button 
                 type="submit" 
                 disabled={status.loading}
-                className="w-full py-3 rounded-xl font-bold bg-green-500 hover:bg-green-400 text-[#020a04] shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                className="w-full btn-primary btn-shine flex items-center justify-center gap-2"
               >
                 {status.loading ? 'Sending...' : (
                   <>

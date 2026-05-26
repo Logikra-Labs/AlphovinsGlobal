@@ -15,6 +15,9 @@ export default function PublicLayout() {
   const { cartCount, setIsCartOpen } = useCart();
   const { isCustomer } = useAuth();
   const { currency, setCurrency, currencies } = useCurrency();
+  const [showBanner, setShowBanner] = useState(() => {
+    return sessionStorage.getItem('seasonal_banner_dismissed') !== 'true';
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -34,6 +37,29 @@ export default function PublicLayout() {
 
       {/* ── Noise Overlay ── */}
       <div className="pointer-events-none fixed inset-0 z-[5] opacity-[0.025] mix-blend-multiply noise-overlay" aria-hidden="true" />
+
+      {/* ── Seasonal Top Banner ── */}
+      {showBanner && (
+        <div className="bg-gradient-to-r from-emerald-600 via-[#10B981] to-emerald-700 text-white text-center py-2 px-4 text-xs sm:text-sm font-semibold relative flex items-center justify-center gap-2 z-[60] shadow-sm font-display pr-10">
+          <span>🌱 Harvest Season Special: Get special wholesale rates on G9 Cavendish & Nendran Bananas!</span>
+          <button 
+            onClick={() => navigate('/contact?subject=Harvest Special rates')} 
+            className="underline hover:text-emerald-100 transition-colors ml-1 font-bold whitespace-nowrap"
+          >
+            Get Quote
+          </button>
+          <button 
+            onClick={() => {
+              setShowBanner(false);
+              sessionStorage.setItem('seasonal_banner_dismissed', 'true');
+            }}
+            className="absolute right-3 p-1 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center"
+            aria-label="Dismiss banner"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* ── Navbar ── */}
       <header className={`sticky top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#FEFAF3]/90 backdrop-blur-xl shadow-[0_1px_0_#E8E0D0]' : 'bg-transparent'}`}>

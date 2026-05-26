@@ -53,8 +53,28 @@ export default function Blog() {
 
         {/* Articles */}
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="w-10 h-10 rounded-full border-4 border-[#E8E0D0] border-t-[#10B981] animate-spin" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(n => (
+              <div key={n} className="card overflow-hidden bg-white border border-[#E8E0D0] rounded-[20px] animate-pulse flex flex-col h-full">
+                <div className="aspect-video bg-[#F5F0E8] w-full" />
+                <div className="p-6 flex flex-col flex-1 space-y-4">
+                  <div className="flex gap-4">
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-1/4" />
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-1/4" />
+                  </div>
+                  <div className="h-6 bg-[#EBE6DE] rounded-md w-3/4" />
+                  <div className="space-y-2 flex-1">
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-full" />
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-full" />
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-2/3" />
+                  </div>
+                  <div className="pt-4 border-t border-[#E8E0D0] flex justify-between items-center">
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-1/5" />
+                    <div className="h-4 bg-[#EBE6DE] rounded-md w-1/4" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
