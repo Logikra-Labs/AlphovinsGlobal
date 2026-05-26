@@ -215,6 +215,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Testimonials ── */}
+      <section aria-label="Customer testimonials" className="py-24 lg:py-32" style={{ background: 'var(--bg-base)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-16 slide-up">
+            <p className="section-label">What Customers Say</p>
+            <h2 className="mt-3 font-display font-bold tracking-[-0.025em] text-[#0A0A0A]" style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
+              Trusted by buyers <span className="gradient-text">across India & beyond</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { name: 'Ramesh V.', role: 'Wholesale Retailer, Chennai', quote: 'We have been sourcing Robusta bananas from Alphovins for over 6 months. The quality is consistently excellent and the pricing is fair. Delivery is always on time.', stars: 5 },
+              { name: 'Priya S.', role: 'Restaurant Owner, Bangalore', quote: 'The Nendran bananas are the best we have ever received for our kitchen. They are perfect for our traditional dishes. Highly recommend for bulk orders!', stars: 5 },
+              { name: 'Khalid M.', role: 'Import Agent, UAE', quote: 'Excellent export quality and proper documentation. The Red Bananas from Alphovins are highly sought after in our Gulf market. Great business to work with.', stars: 5 },
+            ].map((t, i) => (
+              <div key={t.name} className="card p-7 flex flex-col gap-4 slide-up" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="flex gap-1">
+                  {Array.from({ length: t.stars }).map((_, si) => (
+                    <span key={si} className="text-amber-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-[#374151] leading-[1.8] text-sm flex-1">"{t.quote}"</p>
+                <div className="pt-4 border-t border-[#E8E0D0] flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[#ECFDF5] border border-[rgba(16,185,129,0.2)] flex items-center justify-center text-[#10B981] font-bold font-display text-sm">
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#0A0A0A] text-sm font-display">{t.name}</p>
+                    <p className="text-xs text-[#9CA3AF]">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── About / SEO Block ── */}
       <section aria-label="About Alphovins" className="py-24 lg:py-32 bg-[#F5F0E8]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 slide-up">

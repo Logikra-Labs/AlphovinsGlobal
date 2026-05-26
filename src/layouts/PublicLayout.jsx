@@ -201,6 +201,7 @@ export default function PublicLayout() {
               <ul className="mt-5 space-y-3 text-sm">
                 {[
                   { to: '/', label: 'About Us' },
+                  { to: '/faq', label: 'FAQ' },
                   { to: '/blog', label: 'Market Insights' },
                   { to: '/contact', label: 'Contact' },
                   { to: '/terms', label: 'Terms & Conditions' },

@@ -15,6 +15,7 @@ import CustomerLogin from './pages/public/CustomerLogin';
 import CustomerRegister from './pages/public/CustomerRegister';
 import CustomerAccount from './pages/public/CustomerAccount';
 import Blog from './pages/public/Blog';
+import FAQ from './pages/public/FAQ';
 
 // Admin Components
 import Dashboard from './components/Dashboard';
@@ -33,8 +34,29 @@ import { TermsView, PrivacyView, RefundView } from './components/LegalPages';
 
 // Optional: Fallback loading component
 const LoadingScreen = () => (
-  <div className="min-h-screen bg-[#030f05] flex items-center justify-center">
-    <div className="w-12 h-12 rounded-full border-4 border-green-500/20 border-t-green-500 animate-spin"></div>
+  <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)' }}>
+    <div className="w-12 h-12 rounded-full border-4 border-[#E8E0D0] border-t-[#10B981] animate-spin"></div>
+  </div>
+);
+
+const NotFound = () => (
+  <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-20 text-center" style={{ background: 'var(--bg-base)' }}>
+    <div className="text-8xl mb-6">🍌</div>
+    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#10B981] font-display mb-4">404 Error</p>
+    <h1 className="text-4xl md:text-5xl font-extrabold text-[#0A0A0A] font-display mb-4 tracking-tight">
+      Page Not Found
+    </h1>
+    <p className="text-[#374151] text-lg mb-10 max-w-md leading-relaxed">
+      Looks like this bunch went missing. The page you're looking for doesn't exist or was moved.
+    </p>
+    <div className="flex flex-col sm:flex-row gap-4">
+      <a href="/" className="inline-flex items-center justify-center gap-2 bg-[#10B981] hover:bg-[#059669] text-white font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 font-display text-base">
+        Go Home
+      </a>
+      <a href="/shop" className="inline-flex items-center justify-center gap-2 border border-[#E8E0D0] text-[#374151] hover:border-[rgba(16,185,129,0.4)] hover:text-[#10B981] font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 font-display text-base">
+        Browse Shop
+      </a>
+    </div>
   </div>
 );
 
@@ -118,6 +140,7 @@ function App() {
         <Route path="/terms" element={<TermsView />} />
         <Route path="/privacy" element={<PrivacyView />} />
         <Route path="/refund" element={<RefundView />} />
+        <Route path="/faq" element={<FAQ />} />
       </Route>
 
       {/* Admin Login */}
@@ -146,11 +169,7 @@ function App() {
       </Route>
 
       {/* 404 Not Found */}
-      <Route path="*" element={
-        <div className="min-h-screen bg-[#030f05] flex items-center justify-center text-green-300 text-2xl font-bold">
-          404 - Page Not Found
-        </div>
-      } />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
