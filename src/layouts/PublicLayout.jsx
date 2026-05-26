@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Store, ShoppingCart, MessageSquare, Menu, X, Info, User } from 'lucide-react';
+import { Store, ShoppingCart, MessageSquare, Menu, X, Info, User, Globe, Leaf } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import CartDrawer from '../components/public/CartDrawer';
 import WhatsAppWidget from '../components/public/WhatsAppWidget';
 import EnquiryPopup from '../components/public/EnquiryPopup';
-import { Globe } from 'lucide-react';
 
 export default function PublicLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { cartCount, setIsCartOpen } = useCart();
-  const { isCustomer, logout } = useAuth();
+  const { isCustomer } = useAuth();
   const { currency, setCurrency, currencies } = useCurrency();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const navItems = [
     { id: '/', label: 'Home', icon: Store },
@@ -24,118 +30,127 @@ export default function PublicLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#020a04] flex flex-col font-sans">
-      <header className="sticky top-0 z-50 bg-[#020a04]/80 backdrop-blur-xl border-b border-green-900/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <NavLink to="/" className="flex items-center gap-3 cursor-pointer group">
-              <img src="/logo.png" alt="Alphovins Global Agro Exports" className="h-10 w-10 rounded-full object-cover border-2 border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.2)] group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-shadow" />
-              <span className="font-bold text-lg tracking-tight text-white hidden sm:inline">Alphovins</span>
+    <div className="min-h-screen flex flex-col font-sans" style={{ background: 'var(--bg-base)', color: 'var(--text-secondary)' }}>
+
+      {/* ── Noise Overlay ── */}
+      <div className="pointer-events-none fixed inset-0 z-[5] opacity-[0.025] mix-blend-multiply noise-overlay" aria-hidden="true" />
+
+      {/* ── Navbar ── */}
+      <header className={`sticky top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#FEFAF3]/90 backdrop-blur-xl shadow-[0_1px_0_#E8E0D0]' : 'bg-transparent'}`}>
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
+
+          {/* Logo */}
+          <NavLink to="/" className="group flex items-center gap-3">
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#E8E0D0] bg-white shadow-sm transition-transform duration-300 group-hover:scale-105">
+              <img src="/logo.png" alt="Alphovins Global Agro Exports" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-[#0A0A0A] font-display hidden sm:inline">Alphovins</span>
+          </NavLink>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map(item => (
+              <NavLink
+                key={item.id}
+                to={item.id}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 font-display ${
+                    isActive
+                      ? 'text-[#10B981] bg-[#ECFDF5]'
+                      : 'text-[#374151] hover:text-[#0A0A0A] hover:bg-[#F5F0E8]'
+                  }`
+                }
+              >
+                <item.icon size={15} />
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-2">
+            {/* Currency Selector */}
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F5F0E8] border border-[#E8E0D0] text-xs font-medium text-[#374151]">
+              <Globe size={13} className="text-[#10B981]" />
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 text-[#374151] cursor-pointer text-xs"
+              >
+                {Object.entries(currencies).map(([code, details]) => (
+                  <option key={code} value={code} className="bg-white">{details.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sign In */}
+            <NavLink
+              to={isCustomer ? "/account" : "/login"}
+              className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium font-display border border-[#E8E0D0] text-[#374151] hover:border-[rgba(16,185,129,0.4)] hover:text-[#10B981] hover:bg-[#ECFDF5] transition-all duration-200"
+            >
+              <User size={15} />
+              <span>{isCustomer ? "My Account" : "Sign In"}</span>
             </NavLink>
 
-            <nav className="hidden md:flex items-center gap-2">
-              {navItems.map(item => (
-                <NavLink
-                  key={item.id}
-                  to={item.id}
-                  className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
-                    transition-all duration-200 ${
-                    isActive
-                      ? 'bg-green-500 text-[#020a04] shadow-[0_0_15px_rgba(34,197,94,0.4)]'
-                      : 'text-gray-300 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <item.icon size={16} />
-                  <span>{item.label}</span>
-                </NavLink>
-              ))}
-              <NavLink
-                to={isCustomer ? "/account" : "/login"}
-                className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
-                  transition-all duration-200 border ${
-                  isActive
-                    ? 'bg-white/10 text-white border-white/20'
-                    : 'text-green-400 border-green-500/30 hover:bg-green-500/10 hover:border-green-500/50'
-                }`}
-              >
-                <User size={16} />
-                <span>{isCustomer ? "My Account" : "Sign In"}</span>
-              </NavLink>
-            </nav>
+            {/* Cart */}
+            <button
+              id="cart-btn"
+              onClick={() => setIsCartOpen(true)}
+              className="relative flex items-center justify-center w-10 h-10 rounded-xl border border-[#E8E0D0] bg-white text-[#374151] hover:border-[rgba(16,185,129,0.4)] hover:text-[#10B981] transition-all duration-200"
+            >
+              <ShoppingCart size={18} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </button>
 
-            <div className="flex items-center gap-3">
-              {/* Currency Selector */}
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-medium text-gray-300">
-                <Globe size={14} className="text-green-500/60" />
-                <select 
-                  value={currency} 
-                  onChange={(e) => setCurrency(e.target.value)}
-                  className="bg-transparent border-none focus:ring-0 text-white cursor-pointer"
-                >
-                  {Object.entries(currencies).map(([code, details]) => (
-                    <option key={code} value={code} className="bg-[#020a04]">{details.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <button 
-                onClick={() => setIsCartOpen(true)}
-                className="relative p-2 rounded-xl text-green-400 hover:bg-white/5 transition-colors group"
-              >
-                <ShoppingCart size={24} />
-                {cartCount > 0 && (
-                  <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-              <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-xl text-green-400 hover:bg-white/5 transition-colors"
-              >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl border border-[#E8E0D0] bg-white text-[#374151]"
+            >
+              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-green-900/30 bg-[#020a04]/95 backdrop-blur-xl fade-in">
+          <div className="md:hidden border-t border-[#E8E0D0] bg-[#FEFAF3]/95 backdrop-blur-xl fade-in">
             <nav className="px-4 py-3 space-y-1">
               {navItems.map(item => (
                 <NavLink
                   key={item.id}
                   to={item.id}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left
-                    transition-all duration-200 ${
-                    isActive
-                      ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                  className={({ isActive }) =>
+                    `w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium font-display transition-all duration-200 ${
+                      isActive
+                        ? 'bg-[#ECFDF5] text-[#10B981]'
+                        : 'text-[#374151] hover:text-[#0A0A0A] hover:bg-[#F5F0E8]'
+                    }`
+                  }
                 >
-                  <item.icon size={20} />
-                  <span className="font-medium">{item.label}</span>
+                  <item.icon size={18} />
+                  <span>{item.label}</span>
                 </NavLink>
               ))}
               <NavLink
                 to={isCustomer ? "/account" : "/login"}
                 onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left
-                  transition-all duration-200 border mt-2 ${
-                  isActive
-                    ? 'bg-white/10 text-white border-white/20'
-                    : 'text-green-400 border-green-500/30 hover:bg-green-500/10'
-                }`}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium font-display border border-[#E8E0D0] text-[#374151] hover:border-[rgba(16,185,129,0.4)] hover:bg-[#ECFDF5] hover:text-[#10B981] transition-all mt-1"
               >
-                <User size={20} />
-                <span className="font-medium">{isCustomer ? "My Account" : "Sign In / Register"}</span>
+                <User size={18} />
+                <span>{isCustomer ? "My Account" : "Sign In / Register"}</span>
               </NavLink>
             </nav>
           </div>
         )}
       </header>
 
+      {/* ── Main Content ── */}
       <main className="flex-1 w-full">
         <Outlet />
       </main>
@@ -144,39 +159,90 @@ export default function PublicLayout() {
       <WhatsAppWidget />
       <EnquiryPopup />
 
-      <footer className="w-full bg-[#010602] border-t border-green-900/30 py-12 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/logo.png" alt="Alphovins" className="h-12 w-12 rounded-full object-cover border-2 border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.15)]" />
-                <span className="font-bold text-lg text-white">Alphovins</span>
-              </div>
-              <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
-                ALPHOVINS GLOBAL AGRO EXPORTS — Premium bananas delivered fresh from farms to your doorstep.
+      {/* ── Footer ── */}
+      <footer className="w-full bg-[#F5F0E8] border-t border-[#E8E0D0] mt-auto">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <NavLink to="/" className="flex items-center gap-3 group mb-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#E8E0D0] bg-white">
+                  <img src="/logo.png" alt="Alphovins" className="h-full w-full object-cover" />
+                </div>
+                <span className="font-display text-lg font-bold text-[#0A0A0A]">Alphovins</span>
+              </NavLink>
+              <p className="text-sm leading-relaxed text-[#6B7280] max-w-xs">
+                Premium bananas, farm fresh. Grown in Tamil Nadu and delivered to your doorstep.
               </p>
+              <p className="mt-3 text-xs text-[#9CA3AF]">🌱 Grown with care in India</p>
             </div>
+
+            {/* Shop */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Quick Links</h4>
-              <div className="flex flex-col gap-2 text-sm text-gray-400">
-                <NavLink to="/shop" className="hover:text-green-400 transition-colors w-fit">Shop</NavLink>
-                <NavLink to="/contact" className="hover:text-green-400 transition-colors w-fit">Contact Us</NavLink>
-                <NavLink to="/admin/login" className="hover:text-green-400 transition-colors w-fit">Admin Portal</NavLink>
-                <NavLink to="/terms" className="hover:text-green-400 transition-colors w-fit">Terms & Conditions</NavLink>
-                <NavLink to="/privacy" className="hover:text-green-400 transition-colors w-fit">Privacy Policy</NavLink>
-              </div>
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B7280] font-display">Shop</h3>
+              <ul className="mt-5 space-y-3 text-sm">
+                {[
+                  { to: '/shop', label: 'All Products' },
+                  { to: '/shop', label: 'Nendran Banana' },
+                  { to: '/shop', label: 'Robusta Banana' },
+                  { to: '/shop', label: 'Red Banana' },
+                ].map(l => (
+                  <li key={l.label}>
+                    <NavLink to={l.to} className="text-[#6B7280] transition-colors hover:text-[#0A0A0A]">{l.label}</NavLink>
+                  </li>
+                ))}
+              </ul>
             </div>
+
+            {/* Company */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Contact Info</h4>
-              <div className="flex flex-col gap-2 text-sm text-gray-400">
-                <p>Email: business.alphovins@gmail.com</p>
-                <p>Phone: +91 89250 11054</p>
-                <p>Location: 12/141-12 Anandanadarkudi Road Pampanvilai Nagercoil Kanyakumari Tamilnadu-629201</p>
-              </div>
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B7280] font-display">Company</h3>
+              <ul className="mt-5 space-y-3 text-sm">
+                {[
+                  { to: '/', label: 'About Us' },
+                  { to: '/blog', label: 'Market Insights' },
+                  { to: '/contact', label: 'Contact' },
+                  { to: '/terms', label: 'Terms & Conditions' },
+                  { to: '/privacy', label: 'Privacy Policy' },
+                  { to: '/refund', label: 'Refund Policy' },
+                ].map(l => (
+                  <li key={l.label}>
+                    <NavLink to={l.to} className="text-[#6B7280] transition-colors hover:text-[#0A0A0A]">{l.label}</NavLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B7280] font-display">Contact</h3>
+              <ul className="mt-5 space-y-3 text-sm text-[#6B7280]">
+                <li>
+                  <a href="mailto:business.alphovins@gmail.com" className="hover:text-[#0A0A0A] transition-colors">
+                    business.alphovins@gmail.com
+                  </a>
+                </li>
+                <li>
+                  <a href="tel:+918925011054" className="hover:text-[#0A0A0A] transition-colors">
+                    +91 89250 11054
+                  </a>
+                </li>
+                <li className="leading-relaxed">
+                  Pampanvilai, Nagercoil<br />Kanyakumari, Tamil Nadu — 629201
+                </li>
+              </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-green-900/30 text-center text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} ALPHOVINS GLOBAL AGRO EXPORTS. All rights reserved.
+
+          {/* Bottom Bar */}
+          <div className="mt-12 flex flex-col gap-4 border-t border-[#E8E0D0] pt-8 md:flex-row md:items-center md:justify-between">
+            <p className="text-sm text-[#9CA3AF]">
+              © {new Date().getFullYear()} ALPHOVINS GLOBAL AGRO EXPORTS. All rights reserved.
+            </p>
+            <NavLink to="/admin/login" className="text-xs text-[#D1D5DB] hover:text-[#9CA3AF] transition-colors">
+              Admin Portal
+            </NavLink>
           </div>
         </div>
       </footer>
