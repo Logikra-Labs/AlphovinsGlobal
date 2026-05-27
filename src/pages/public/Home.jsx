@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ArrowRight, Leaf, ShieldCheck, Truck, Globe2, Package, Star, MapPin, Banana } from 'lucide-react';
+import { ArrowRight, Leaf, ShieldCheck, Truck, Globe2, Package, Star, MapPin, Banana, Play, X } from 'lucide-react';
 
 const BANANA_VARIETIES = [
   { emoji: '🍌', name: 'Robusta Banana', tamil: 'ரோபஸ்டா வாழை', desc: 'The most popular commercial export variety. Sweet, creamy, and rich in potassium. Ideal for bulk export and wholesale.', tags: ['Export Grade', 'Bulk Available'] },
@@ -26,6 +26,8 @@ const STATS = [
 ];
 
 export default function Home() {
+  const [videoOpen, setVideoOpen] = useState(false);
+
   return (
     <div className="w-full">
 
@@ -252,8 +254,70 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Video Showcase ── */}
+      <section aria-label="Our process video" className="py-24 lg:py-32 bg-[#F5F0E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-14 slide-up">
+            <p className="section-label">See It In Action</p>
+            <h2 className="mt-3 font-display font-bold tracking-[-0.025em] text-[#0A0A0A]" style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
+              Farm to Port — <span className="gradient-text">Our Process</span>
+            </h2>
+            <p className="mt-4 text-[#374151] leading-[1.7] text-lg">
+              Watch how we handle our bananas with precision — from harvest in Tamil Nadu to expert packing and export-ready storage.
+            </p>
+          </div>
+
+          {/* Video Card */}
+          <div className="relative rounded-[24px] overflow-hidden border border-[#E8E0D0] shadow-[0_8px_40px_rgba(0,0,0,0.1)] slide-up cursor-pointer group" onClick={() => setVideoOpen(true)}>
+            {/* Video thumbnail — autoplay muted loop for preview */}
+            <video
+              src="/alphovinsvid.mp4"
+              muted
+              loop
+              playsInline
+              autoPlay
+              className="w-full aspect-video object-cover"
+            />
+            {/* Dark overlay on hover */}
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-all duration-500 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-white/90 group-hover:bg-white group-hover:scale-110 transition-all duration-300 flex items-center justify-center shadow-2xl">
+                <Play size={32} className="text-[#10B981] ml-1" fill="currentColor" />
+              </div>
+            </div>
+            {/* Bottom label */}
+            <div className="absolute bottom-0 left-0 right-0 px-8 py-6 bg-gradient-to-t from-black/70 to-transparent">
+              <p className="text-white font-display font-bold text-xl">Alphovins Global Agro Exports</p>
+              <p className="text-white/70 text-sm mt-1">Packing · Cold Storage · Logistics · Farm</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Video Modal ── */}
+      {videoOpen && (
+        <div
+          className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 fade-in"
+          onClick={() => setVideoOpen(false)}
+        >
+          <button
+            onClick={() => setVideoOpen(false)}
+            className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors z-10"
+          >
+            <X size={24} />
+          </button>
+          <div className="w-full max-w-5xl slide-up" onClick={e => e.stopPropagation()}>
+            <video
+              src="/alphovinsvid.mp4"
+              controls
+              autoPlay
+              className="w-full rounded-2xl shadow-2xl aspect-video"
+            />
+          </div>
+        </div>
+      )}
+
       {/* ── About / SEO Block ── */}
-      <section aria-label="About Alphovins" className="py-24 lg:py-32 bg-[#F5F0E8]">
+      <section aria-label="About Alphovins" className="py-24 lg:py-32 bg-[#FEFAF3]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 slide-up">
           <p className="section-label mb-3">About Us</p>
           <h2 className="font-display font-bold tracking-[-0.025em] text-[#0A0A0A] mb-6" style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>

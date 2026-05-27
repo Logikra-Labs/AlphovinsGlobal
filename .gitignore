@@ -29,3 +29,9 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Large media files (host externally)
+public/*.mp4
+public/*.mov
+public/*.avi
+public/*.webm
