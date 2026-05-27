@@ -267,16 +267,16 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Video Card */}
-          <div className="relative rounded-[24px] overflow-hidden border border-[#E8E0D0] shadow-[0_8px_40px_rgba(0,0,0,0.1)] slide-up cursor-pointer group" onClick={() => setVideoOpen(true)}>
-            {/* Video thumbnail — autoplay muted loop for preview */}
-            <video
-              src="/alphovinsvid.mp4"
-              muted
-              loop
-              playsInline
-              autoPlay
-              className="w-full aspect-video object-cover"
+          {/* Video Card — thumbnail from Google Drive */}
+          <div
+            className="relative rounded-[24px] overflow-hidden border border-[#E8E0D0] shadow-[0_8px_40px_rgba(0,0,0,0.1)] slide-up cursor-pointer group aspect-video"
+            onClick={() => setVideoOpen(true)}
+          >
+            {/* Google Drive thumbnail as poster */}
+            <img
+              src="https://drive.google.com/thumbnail?id=1HMdPNNKxiec175DoQSmUoUd4GH5P8GYp&sz=w1280"
+              alt="Alphovins Farm Process Video"
+              className="w-full h-full object-cover"
             />
             {/* Dark overlay on hover */}
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-all duration-500 flex items-center justify-center">
@@ -305,12 +305,13 @@ export default function Home() {
           >
             <X size={24} />
           </button>
-          <div className="w-full max-w-5xl slide-up" onClick={e => e.stopPropagation()}>
-            <video
-              src="/alphovinsvid.mp4"
-              controls
-              autoPlay
-              className="w-full rounded-2xl shadow-2xl aspect-video"
+          <div className="w-full max-w-5xl slide-up aspect-video" onClick={e => e.stopPropagation()}>
+            <iframe
+              src="https://drive.google.com/file/d/1HMdPNNKxiec175DoQSmUoUd4GH5P8GYp/preview"
+              allow="autoplay; fullscreen"
+              allowFullScreen
+              className="w-full h-full rounded-2xl shadow-2xl"
+              title="Alphovins Farm Process Video"
             />
           </div>
         </div>
